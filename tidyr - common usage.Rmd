@@ -1,0 +1,33 @@
+---
+title: "tidyr"
+output: html_notebook
+---
+The goal of tidyr is to help create tidy data that is efficient for data analysis
+- Each variable is a column
+- Each observation is a row
+- Each Value is a cell
+
+Make Data Taller and Make Wider - 2 main functions to do this....
+- gather() - takes multiple columns and gathers them into key-value pairs:
+              MAKES WIDE DATA LONGER
+
+- spread() - takes two columns (key and value) and spreads into multiple columns
+              MAKES LONG DATA WIDER 
+
+Seperate and unite columns
+- separate() - separate() - Seperate one column into multiple columns (deliniate)
+
+- unite() - Unite multiple columns into one. 
+
+For an example where there is data in the column headers...
+```{r}
+untidy_df %>%
+  gather(gender_year, income, male_2016:female_2018) %>% #Columns you want to create, range:range select
+  seperate(gender_year)
+
+
+
+
+
+```
+

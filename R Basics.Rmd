@@ -1,0 +1,50 @@
+---
+title: "R Coding Basics - tidyverse"
+---
+Basics presented by Thomas Mock - Rstudio customer success team. 
+https://www.youtube.com/watch?v=MKwyauo8nSI&t=545s
+
+
+Basic Coding in R - maths
+```{r}
+
+#Basic Variable Storage, <- to input data to a variable name. 
+x <- 3*4
+
+y <- 5
+
+#Can create data frames just like in pandas.
+tmp_df <-data.frame(
+  col_1 = c(1,2,3),
+  col_2 = c("a","b","c")
+)
+
+
+#Functions
+function_name(arg1, arg2, arg3)
+
+seq(from, to, by,
+    length.out, along.with)
+
+seq(from = 10, to =100, by=10)
+
+
+#Nesting Function
+#    %>% means 'AND THEN'
+#    Incredibly important across R and through tidy packages
+
+do_something <- data %>%
+  do_something() %>%
+  do_another_thing()%>%
+  do_last_thing()
+
+#Tidyverse stuff
+data %>%
+  filter(year ==2018) %>%
+  group_by(age_group) %>%
+  summarize(mean=mean(income))
+
+#something like that ^^^
+
+
+```

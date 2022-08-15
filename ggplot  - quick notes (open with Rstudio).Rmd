@@ -1,0 +1,142 @@
+---
+title: "ggplot2"
+output: html_notebook
+---
+Could discuss this for hours, there's a billion things you can do with these. 
+Great for exploratory data analysis. 
+Final step after data is tidyied and dplyr'd. 
+
+########################################################
+
+3 core parts
+
+ggplot - builds the base layer
+
+geom_ is the shape
+- geom_point()
+- geom_line()
+- geom_bar()
+- geom_boxplot()
+- geom_?()
+
+aes is the mapping or relationship of the data
+- Horizontal dimensions (x)
+- vertical dimensions (y)
+- color
+- Shape
+- Size
+- Transparency
+- Relationship
+
+
+Basic ggplot call
+```{r}
+#ggplot(data = <DATA>, mapping = aes(<MAPPINGS>)) +
+ # <GEOM_FUNCTION>()
+
+mtcars <- as_tibble(mtcars)
+
+ggplot(mtcars, aes(x = cyl, y = mpg)) +
+  geom_point()
+
+#ggplot generates below in the code. 
+```
+So many types of graphs....
+- geom_point() - Scatter plot
+- geom_dotplot() - Dot Plot
+- geom_hline() - Horizontal Ref Line
+- geom_vline() - Vertical refernce line
+- geom_boxplot() - box error plot
+- geom_density() - smoothed density estimates
+- geom_errorbarh() - horizontal error bars
+- geom_hex() - Hexagonal heatmap of 2d bin counts
+- geom_jitter() - Jittered points
+- geom_linearange() - Vertical interval line
+- geom_pointrange() - Vertical point line
+- geom_line() - connect observations line
+- geom_step() - connect observations via step lines
+- geom_polygon() - Polygons
+- geom_segment() - line segment
+- geom_ribbon() - Ribbon plot
+- geom_area() - Area plot
+- geom_rug() - rug plots in the margins
+- geom_smooth() - smoothed conditional means
+- geom_label() - label points with text
+- geom_text() - add text
+- geom_violin() - Violin plot
+- geom_sf() - Visual sf plot
+- geom_map() - Plot map
+- geom_qq_line() - a Quantile-quantile plot
+- geom_histogram() - Histogram plot
+
+```{r}
+install.packages('gapminder')
+
+library('gapminder')
+gapminder_df <- as_tibble(gapminder)
+
+gapminder_df %>%
+  filter(country == 'Turkey') %>%
+  #filter(lifeExp < 70) %>%
+  ggplot(aes(x = year, y = lifeExp, colour = country)) +
+  geom_line(size = 1)
+
+```
+
+```{r}
+bar_df <-gapminder_df %>%
+  filter(year == 2007 & continent == 'Americas') %>%
+  arrange(desc(lifeExp)) %>%
+  head(8)
+
+#A different way, assigning a plot to a variable for future calls, can reduce code. 
+(bars <-ggplot(bar_df, aes(x = country, y = lifeExp)) +
+    geom_bar(stat = "identity"))  #can also use, geom_col()) instead of geom_bar
+
+#Histograms
+hist_plot <-gapminder_df %>%
+  filter(year == 2007) %>%
+  ggplot(aes(x = lifeExp)) +
+  geom_histogram(binwidth = 5, color = "White")
+
+prettify<-hist_plot +
+            labs(x = 'Life Expectancy (Years)',
+                 y = 'Count',
+                 title = "Life Expectancy",
+                 subtitle = 'Year = 2007',
+                 caption = "Source: Gapminder")
+prettify
+
+#To save plots as .png
+ggsave('life_exp_2007.png',prettify,
+       height = 4, width = 6, units = 'in', dpi = 450)
+
+```
+Using themes to save code in GGPLOT2
+
+```{r}
+install.packages("ggthemes")
+
+gapminder_df %>%
+  filter(country == 'China' | country == 'United States') %>%
+  ggplot(aes(x = year, y = lifeExp, color = country)) +
+  geom_line(size = 1) +
+  ggthemes::theme_few()
+
+#theme_minimal()
+#ggthemes::theme_economist_white()
+#theme_bw()
+#theme_classic()
+#ggthemes::theme_few()
+```
+
+
+
+
+
+
+
+
+
+
+

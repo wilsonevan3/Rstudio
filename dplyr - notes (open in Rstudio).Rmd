@@ -1,0 +1,193 @@
+---
+title: "dplyr"
+output: html_notebook
+---
+dplyr quick notes
+Main player of tidying data for the tidyverse. 
+
+6 main functions
+filter()
+arrange()
+select()
+mutate()
+group_by()
+summarize()
+
+simple use 
+pull()
+n()/count()
+glimpse()
+
+First, get your data set as a tibble
+```{r}
+mtcars <- as_tibble(mtcars)
+
+mtcars
+```
+Just like in python, you can use head and tail functions to limit down the dataset. 
+
+Structure is largely the same. 
+
+```{r}
+head(mtcars, 5)
+#tail(mtcars, 5)
+```
+
+Can also use the slice function (similar to .loc in pandas). Starts with 1 instead of 0 for python.
+
+```{r}
+slice(mtcars, 1,3,5)
+```
+Glimpse can be used to pull a quick visualization of the dataset. 
+
+```{r}
+glimpse(mtcars)
+```
+Filter is a crucial dplyr function.  It has to have == to work, single = is read as a variable assignment which is not what you want. 
+
+simply use a , followed by a column name to filter your dataset down. 
+
+To view all 8 cylinder vehicles from mtcars...
+
+```{r}
+#filter(mtcars, cyl == 8)
+
+
+
+#Can also use more complex features. 
+mtcars %>%
+  filter(cyl %in% c(4,6))
+#Excludes everything that does not have 4 or 6 cylinders. 
+
+
+
+#NOT EQUAL TO
+mtcars %>%
+  filter(cyl !=4)
+#Shows everything that is not 4 cylinder. 
+```
+Arrange - Sorts the dataset top to bottom. 
+
+arrange will default as a low to high, use desc to sort high to low
+
+```{r}
+#Ascending
+mtcars %>%
+  arrange(mpg)
+
+#Descending
+mtcars %>%
+  arrange(desc(mpg))
+
+#Can stack multiple variables....
+mtcars %>%
+  arrange(desc(cyl), desc(hp))
+```
+
+Combining layers together.......
+
+```{r}
+mtcars %>%
+  select(cyl,mpg) %>%
+  glimpse()
+
+#Selecting multiple columns
+mtcars %>%
+  select(cyl,mpg, hp, disp) %>%
+  glimpse()
+
+#Dropping columns from the select query. 
+mtcars %>%
+  select(disp, cyl, hp, mpg) %>%
+  select(-mpg) %>%       #This drops mpg
+  glimpse()
+
+#Selecting columns that begin with something
+mtcars %>%
+  select(starts_with('c'), starts_with('h')) %>%
+  glimpse()
+
+```
+Mutate to transform the data table for manipulation
+
+mutates the cyl column to move from a integer to a factor (which is a string)
+```{r}
+mtcars %>%
+  mutate(cyl = factor(cyl,
+                      levels = c(4,6,8),
+                      labels = c('4 Cyl','6 Cyl','8 Cyl'))) %>%
+  select (cyl) %>%
+  glimpse()
+
+```
+Can also use mutations to change and modify datasets for different units
+
+```{r}
+mtcars %>%
+  mutate(miles_per_liter = mpg * 3.78541,
+         miles_per_gallon = miles_per_liter / 3.78541) %>%
+  select(miles_per_liter, mpg, miles_per_gallon) %>%
+  head(10)
+
+mtcars %>%
+  group_by(cyl) %>%
+  #slice(1) #Grabs the first observation for each of the cyl variables
+  #filter(hp == max(hp))  #max hp observed
+  #top_n(1, hp)  #top observation by column
+  #arrange(desc(hp))
+  #count()
+
+```
+
+aggregation functions
+```{r}
+mtcars %>%
+  summarize(mean=mean(mpg))
+
+#why not...
+# mtcars %>% mean(mpg)  This looks for a vector. 
+
+mtcars %>%
+  pull(mpg) %>%
+  mean()  #This will run the mean on the pull, see below for result.
+
+
+mtcars %>%
+  summarize(median(mpg))
+
+mtcars %>%
+  summarize(median_mpg = mean(mpg))
+
+```
+Summarize gets really powerful when combined with GROUP_BY
+
+```{r}
+mtcars %>%
+  group_by(cyl) %>%
+  summarize(mean_mpg = mean(mpg),
+            sd_mpg =sd(mpg),
+            n = n())
+
+```
+Mutate_at()
+```{r}
+mtcars %>%
+  mutate_at(.vars = vars(cyl, am), factor) %>%
+  select(cyl, am) %>%
+  glimpse()
+
+mtcars %>%
+  group_by(cyl) %>%
+  summarize_at (.vars = vars(mpg, disp, qsec),.funs=mean)
+
+```
+
+
+
+
+
+
+
+
+
+
