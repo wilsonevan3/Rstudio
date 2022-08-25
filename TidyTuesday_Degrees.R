@@ -49,6 +49,7 @@ fig <- degrees %>%
          )
 fig
 
+#Highest growth Ph.D's awarded since 2008. 
 degrees %>%
   filter(n_phds > 50) %>%
   group_by(field)%>%
